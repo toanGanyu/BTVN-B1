@@ -1,0 +1,68 @@
+using System.Diagnostics;
+using System;
+using System.Linq;
+ 
+namespace Bài_2_Giải_Thuật
+{
+    internal class Program
+    {
+        public class Timing
+        {
+            private TimeSpan startingTime;
+            private TimeSpan duration;
+ 
+            public Timing()
+            {
+                startingTime = new TimeSpan(0);
+                duration = new TimeSpan(0);
+            }
+ 
+            public void StopTime()
+            {
+                duration = Process.GetCurrentProcess().Threads[0].UserProcessorTime.Subtract(startingTime);
+            }
+ 
+            public void StartTime()
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                startingTime = Process.GetCurrentProcess().Threads[0].UserProcessorTime;
+            }
+ 
+            public TimeSpan Result()
+            {
+                return duration;
+            }
+        }
+ 
+        static void Main(string[] args)
+        {
+            Timing timing = new Timing();
+            timing.StartTime();
+            Random rdm = new Random();
+            int[] arr = new int[1000];
+            for (int i = 0; i < 1000; i++)
+                arr[i] = rdm.Next();
+ 
+            MAXMIN(arr);
+ 
+            timing.StopTime();
+            Console.WriteLine("\n Thoi gian : " + timing.Result().TotalSeconds + " giây");
+        }
+ 
+        static void MAXMIN<T>(T[] arr)
+        {
+            T min = arr[0];
+            T max = arr[0];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if ((dynamic)min > arr[i])
+                    min = arr[i];
+                if ((dynamic)max < arr[i])
+                    max = arr[i];
+            } 
+            Console.WriteLine("Max: " + max);
+            Console.WriteLine("Min: " + min);
+        }
+    }
+}
